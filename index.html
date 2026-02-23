@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BaggaD119 | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="site-header">
+    <div class="container header-wrap">
+      <a class="brand" href="#hero">BaggaD119.</a>
+      <nav>
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="hero" class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Creative Developer & Builder</p>
+          <h1>I design and ship digital products that feel premium and perform at scale.</h1>
+          <p class="lead">A modern portfolio with a built-in admin dashboard to publish your deployed projects in seconds.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#projects">View Projects</a>
+            <a class="btn btn-ghost" href="#contact">Get In Touch</a>
+          </div>
+        </div>
+        <div class="hero-panel reveal delay-1">
+          <p class="panel-title">Current Focus</p>
+          <ul>
+            <li>Frontend architecture</li>
+            <li>UI performance optimization</li>
+            <li>Fullstack product launches</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="projects-section">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Selected Work</p>
+          <h2>Deployed Projects</h2>
+        </div>
+        <div id="projectGrid" class="project-grid"></div>
+        <p id="emptyState" class="empty-state">No projects yet. Add your first one from the Admin Dashboard.</p>
+      </div>
+    </section>
+
+    <section id="about" class="about-section">
+      <div class="container about-grid">
+        <div class="reveal">
+          <p class="eyebrow">About</p>
+          <h2>Built for impact.</h2>
+          <p>
+            I blend engineering rigor with visual taste to create websites and apps that are fast, accessible, and memorable.
+          </p>
+        </div>
+        <div class="about-card reveal delay-1">
+          <h3>Capabilities</h3>
+          <p>Design systems, frontend development, API integrations, analytics, and production deployment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <div class="container reveal">
+        <p class="eyebrow">Contact</p>
+        <h2>Let’s build something sharp.</h2>
+        <div class="contact-actions">
+          <a id="contactEmailBtn" class="btn btn-primary" href="mailto:opokuamanorsolomon@gmail.com">Send an Email</a>
+          <div class="social-links">
+            <a id="whatsappLink" class="btn btn-primary social-pill" href="#" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <a id="linkedinLink" class="btn btn-primary social-pill" href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a id="instagramLink" class="btn btn-primary social-pill" href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a id="tiktokLink" class="btn btn-primary social-pill" href="#" target="_blank" rel="noopener noreferrer">TikTok</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <p>© <span id="year"></span> BaggaD119. Crafted with precision.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

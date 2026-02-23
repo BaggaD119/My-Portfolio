@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="admin-body">
+  <div class="grain"></div>
+  <header class="site-header admin-header">
+    <div class="container header-wrap">
+      <a class="brand" href="index.html">BaggaD119.</a>
+      <nav>
+        <a href="index.html">Back to Portfolio</a>
+        <button id="logoutBtn" class="btn btn-ghost logout-btn" type="button" hidden>Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-main container">
+    <section id="authCard" class="dashboard-card reveal">
+      <div class="section-head">
+        <p class="eyebrow">Admin Login</p>
+        <h1>Sign in to manage portfolio data</h1>
+      </div>
+      <form id="authForm" class="project-form auth-form">
+        <label>
+          Email
+          <input id="authEmail" type="email" required placeholder="you@example.com" />
+        </label>
+        <label>
+          Password
+          <input id="authPassword" type="password" required placeholder="Your password" />
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Sign In</button>
+          <p id="authStatus" class="edit-status" hidden></p>
+        </div>
+      </form>
+    </section>
+
+    <div id="adminApp" hidden>
+    <section class="dashboard-card reveal">
+      <div class="section-head">
+        <p class="eyebrow">Admin Dashboard</p>
+        <h1>Upload Deployed Projects</h1>
+      </div>
+
+      <form id="projectForm" class="project-form">
+        <label>
+          Project Name
+          <input id="name" type="text" required placeholder="Portfolio Revamp" />
+        </label>
+        <label>
+          Category
+          <input id="category" type="text" required placeholder="Web App" />
+        </label>
+        <label>
+          Deployed URL
+          <input id="url" type="url" required placeholder="https://your-project.com" />
+        </label>
+        <label>
+          Short Description
+          <textarea id="description" rows="4" required placeholder="What the project does and why it matters."></textarea>
+        </label>
+        <label>
+          Thumbnail Image
+          <input id="image" type="file" accept="image/*" />
+        </label>
+
+        <p id="editStatus" class="edit-status" hidden></p>
+
+        <div class="form-actions">
+          <button id="saveBtn" type="submit" class="btn btn-primary">Save Project</button>
+          <button type="button" id="cancelEdit" class="btn btn-ghost" hidden>Cancel Edit</button>
+          <button type="button" id="removeImage" class="btn btn-ghost" hidden>Remove Existing Image</button>
+          <button type="button" id="clearAll" class="btn btn-ghost">Clear All</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="dashboard-card reveal delay-1">
+      <div class="dashboard-tools">
+        <h2>Project Library</h2>
+        <div class="tool-actions">
+          <button id="exportBtn" class="btn btn-ghost" type="button">Export JSON</button>
+          <label class="btn btn-ghost upload-btn">
+            Import JSON
+            <input id="importInput" type="file" accept="application/json" hidden />
+          </label>
+        </div>
+      </div>
+      <div id="adminProjectList" class="admin-project-list"></div>
+      <p id="adminEmpty" class="empty-state">No projects added yet.</p>
+    </section>
+
+    <section class="dashboard-card reveal delay-1">
+      <div class="section-head">
+        <p class="eyebrow">Contact Settings</p>
+        <h2>Update Social Details</h2>
+      </div>
+
+      <form id="contactForm" class="project-form">
+        <label>
+          Email Address
+          <input id="contactEmail" type="email" required placeholder="you@example.com" />
+        </label>
+        <label>
+          WhatsApp (number or URL)
+          <input id="contactWhatsapp" type="text" placeholder="+233XXXXXXXXX or https://wa.me/233..." />
+        </label>
+        <label>
+          LinkedIn URL
+          <input id="contactLinkedin" type="url" placeholder="https://linkedin.com/in/username" />
+        </label>
+        <label>
+          Instagram URL
+          <input id="contactInstagram" type="url" placeholder="https://instagram.com/username" />
+        </label>
+        <label>
+          TikTok URL
+          <input id="contactTiktok" type="url" placeholder="https://tiktok.com/@username" />
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Contact Details</button>
+          <p id="contactSaved" class="edit-status" hidden>Saved.</p>
+        </div>
+      </form>
+    </section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
