@@ -228,12 +228,31 @@ function typeHeroHeadline() {
 
   headline.textContent = "";
   let index = 0;
+  const typeSpeedMs = 40;
+  const eraseSpeedMs = 28;
+  const holdAfterTypingMs = 7000;
+  const holdAfterErasingMs = 900;
+
+  const eraseNext = () => {
+    if (index < 0) {
+      setTimeout(typeNext, holdAfterErasingMs);
+      return;
+    }
+
+    headline.textContent = fullText.slice(0, index);
+    index -= 1;
+    setTimeout(eraseNext, eraseSpeedMs);
+  };
 
   const typeNext = () => {
-    if (index > fullText.length) return;
+    if (index > fullText.length) {
+      setTimeout(eraseNext, holdAfterTypingMs);
+      return;
+    }
+
     headline.textContent = fullText.slice(0, index);
     index += 1;
-    setTimeout(typeNext, 40);
+    setTimeout(typeNext, typeSpeedMs);
   };
 
   typeNext();
