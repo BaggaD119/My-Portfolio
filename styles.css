@@ -83,6 +83,13 @@ a {
   font-family: "Literata", serif;
   font-size: 1.6rem;
   font-weight: 700;
+  color: #ffd36b;
+  text-shadow:
+    0 0 10px rgba(255, 211, 107, 0.65),
+    0 0 24px rgba(255, 173, 66, 0.45);
+  display: inline-block;
+  transform-origin: center;
+  animation: brandPulse 2.4s ease-in-out infinite;
 }
 
 nav {
@@ -553,6 +560,22 @@ textarea:focus {
   }
   50% {
     transform: scale(1.1);
+  }
+}
+
+@keyframes brandPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    text-shadow:
+      0 0 10px rgba(255, 211, 107, 0.65),
+      0 0 24px rgba(255, 173, 66, 0.45);
+  }
+  50% {
+    transform: scale(1.08);
+    text-shadow:
+      0 0 14px rgba(255, 221, 133, 0.9),
+      0 0 32px rgba(255, 175, 74, 0.65);
   }
 }
 
