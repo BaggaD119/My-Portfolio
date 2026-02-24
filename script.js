@@ -228,8 +228,8 @@ function typeHeroHeadline() {
 
   headline.textContent = "";
   let index = 0;
-  const typeSpeedMs = 40;
-  const eraseSpeedMs = 28;
+  const typeSpeedMs = 78;
+  const eraseSpeedMs = 62;
   const holdAfterTypingMs = 7000;
   const holdAfterErasingMs = 900;
 
