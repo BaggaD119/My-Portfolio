@@ -138,6 +138,12 @@ main section {
   margin-bottom: 0.85rem;
 }
 
+.hero-eyebrow-zoom {
+  display: inline-block;
+  transform-origin: center;
+  animation: eyebrowZoom 2.2s ease-in-out infinite;
+}
+
 .lead {
   color: var(--muted);
   margin-top: 1.2rem;
@@ -352,6 +358,38 @@ main section {
   gap: 0.8rem;
 }
 
+.support-form {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.support-form label {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.support-form label:nth-child(3),
+.support-form label:nth-child(4),
+.support-status {
+  grid-column: 1 / -1;
+}
+
+.support-status {
+  font-size: 0.95rem;
+}
+
+.support-status.is-success {
+  color: var(--success);
+}
+
+.support-status.is-error {
+  color: #ff9e9e;
+}
+
 .support-note {
   margin-top: 1rem;
   color: var(--muted);
@@ -508,6 +546,16 @@ textarea:focus {
   }
 }
 
+@keyframes eyebrowZoom {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
 @media (max-width: 980px) {
   .hero-grid,
   .about-grid,
@@ -560,5 +608,9 @@ textarea:focus {
 
   .support-wrap {
     padding: 1.3rem;
+  }
+
+  .support-form {
+    grid-template-columns: 1fr;
   }
 }

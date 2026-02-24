@@ -31,11 +31,30 @@
         <p class="lead">
           If you like what I am building, you can support me directly with Paystack.
         </p>
-        <div class="support-actions">
-          <a class="btn btn-primary" href="https://paystack.com/pay/your-link" target="_blank" rel="noopener noreferrer">Support via Paystack</a>
-          <a class="btn btn-ghost" href="mailto:opokuamanorsolomon@gmail.com">Contact Me</a>
-        </div>
-        <p class="support-note">Replace the Paystack URL in this button with your real payment link.</p>
+        <form id="supportForm" class="support-form">
+          <label>
+            Email
+            <input id="supportEmail" type="email" required placeholder="you@example.com" />
+          </label>
+          <label>
+            Amount (GHS)
+            <input id="supportAmount" type="number" min="1" step="1" required placeholder="50" />
+          </label>
+          <label>
+            Name (optional)
+            <input id="supportName" type="text" placeholder="Your name" />
+          </label>
+          <label>
+            Message (optional)
+            <textarea id="supportMessage" rows="3" placeholder="Keep building amazing things."></textarea>
+          </label>
+          <div class="support-actions">
+            <button id="supportSubmit" class="btn btn-primary" type="submit">Give via Paystack</button>
+            <a class="btn btn-ghost" href="mailto:opokuamanorsolomon@gmail.com">Contact Me</a>
+          </div>
+          <p id="supportStatus" class="support-status" hidden></p>
+        </form>
+        <p class="support-note">You will be redirected to Paystack checkout to complete payment securely.</p>
       </div>
     </section>
   </main>
@@ -47,8 +66,6 @@
     </div>
   </footer>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+  <script src="give.js"></script>
 </body>
 </html>
