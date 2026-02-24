@@ -33,6 +33,9 @@ let removeImageRequested = false;
 let currentProjects = [];
 let currentUser = null;
 let supportsProjectExtras = true;
+let adminProjectSearchTerm = "";
+let supportRecords = [];
+let activeSupportStatusFilter = "all";
 
 function parseTags(rawValue) {
   return String(rawValue || "")
@@ -217,15 +220,32 @@ function renderAdminProjects() {
   if (!list || !empty) return;
 
   list.innerHTML = "";
+  const normalizedSearch = adminProjectSearchTerm.trim().toLowerCase();
+  const visibleProjects = currentProjects.filter((project) => {
+    if (!normalizedSearch) return true;
+    const searchableText = [
+      project.name || "",
+      project.category || "",
+      project.description || "",
+      (project.tags || []).join(" "),
+      project.url || ""
+    ]
+      .join(" ")
+      .toLowerCase();
+    return searchableText.includes(normalizedSearch);
+  });
 
-  if (!currentProjects.length) {
+  if (!visibleProjects.length) {
+    empty.textContent = adminProjectSearchTerm ? "No projects match your search." : "No projects added yet.";
     empty.style.display = "block";
     return;
   }
 
+  empty.textContent = "No projects added yet.";
   empty.style.display = "none";
 
-  currentProjects.forEach((project, index) => {
+  visibleProjects.forEach((project) => {
+    const index = currentProjects.findIndex((item) => item.id === project.id);
     const row = document.createElement("article");
     row.className = "admin-item";
     const imageUrl = project.image_url || "";
@@ -395,26 +415,135 @@ function renderSupportAnalytics(records) {
   if (topMonthEl) topMonthEl.textContent = topMonth;
 }
 
+function formatSupportDate(dateText) {
+  const date = new Date(dateText);
+  if (Number.isNaN(date.getTime())) return "-";
+  return date.toLocaleString();
+}
+
+function normalizeSupportStatus(status) {
+  return String(status || "unknown").trim().toLowerCase();
+}
+
+function getVisibleSupportRecords() {
+  if (activeSupportStatusFilter === "all") return supportRecords;
+  return supportRecords.filter((record) => normalizeSupportStatus(record.status) === activeSupportStatusFilter);
+}
+
+function renderSupportRecordsCount(visibleCount, totalCount) {
+  const countEl = document.getElementById("supportRecordsCount");
+  if (!countEl) return;
+
+  if (activeSupportStatusFilter === "all") {
+    countEl.textContent = `${totalCount} record${totalCount === 1 ? "" : "s"}`;
+    return;
+  }
+
+  countEl.textContent = `${visibleCount} of ${totalCount} record${totalCount === 1 ? "" : "s"}`;
+}
+
+function renderSupportTable() {
+  const body = document.getElementById("supportTableBody");
+  const empty = document.getElementById("supportTableEmpty");
+  if (!body || !empty) return;
+
+  const visibleRecords = getVisibleSupportRecords();
+  renderSupportRecordsCount(visibleRecords.length, supportRecords.length);
+  body.innerHTML = "";
+
+  if (!visibleRecords.length) {
+    empty.style.display = "block";
+    return;
+  }
+
+  empty.style.display = "none";
+
+  visibleRecords.forEach((record) => {
+    const row = document.createElement("tr");
+    const status = normalizeSupportStatus(record.status);
+    const statusClass =
+      status === "success" ? "is-success" : ["failed", "abandoned", "refunded"].includes(status) ? `is-${status}` : "";
+
+    row.innerHTML = `
+      <td>${escapeHTML(formatSupportDate(record.paid_at || record.created_at))}</td>
+      <td>${escapeHTML(record.email || "-")}</td>
+      <td>${escapeHTML(formatCurrency(record.amount || 0))} ${escapeHTML(record.currency || "GHS")}</td>
+      <td><span class="status-pill ${statusClass}">${escapeHTML(status)}</span></td>
+      <td>${escapeHTML(record.reference || "-")}</td>
+    `;
+    body.appendChild(row);
+  });
+}
+
+function escapeCsvValue(value) {
+  const text = String(value ?? "");
+  if (!text.includes(",") && !text.includes('"') && !text.includes("\n")) return text;
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+function exportSupportCsv() {
+  const rows = getVisibleSupportRecords();
+  if (!rows.length) {
+    setAnalyticsStatus("No support records to export.", true);
+    return;
+  }
+
+  const header = ["Date", "Email", "Amount", "Currency", "Status", "Reference"];
+  const lines = [
+    header.join(","),
+    ...rows.map((record) =>
+      [
+        formatSupportDate(record.paid_at || record.created_at),
+        record.email || "",
+        Number(record.amount || 0),
+        record.currency || "GHS",
+        normalizeSupportStatus(record.status),
+        record.reference || ""
+      ]
+        .map(escapeCsvValue)
+        .join(",")
+    )
+  ];
+
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "support-records.csv";
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function handleSupportFilterChange(event) {
+  activeSupportStatusFilter = String(event.target.value || "all").toLowerCase();
+  renderSupportTable();
+}
+
 async function loadSupportAnalytics() {
   if (!supabaseClient) {
+    supportRecords = [];
     renderSupportAnalytics([]);
+    renderSupportTable();
     setAnalyticsStatus("Analytics use Supabase support_records data.", true);
     return;
   }
 
   const { data, error } = await supabaseClient
     .from(supportTable)
-    .select("reference, amount, currency, status, paid_at, created_at")
-    .eq("status", "success")
-    .order("paid_at", { ascending: false });
+    .select("reference, email, amount, currency, status, paid_at, created_at")
+    .order("created_at", { ascending: false });
 
   if (error) {
+    supportRecords = [];
     renderSupportAnalytics([]);
+    renderSupportTable();
     setAnalyticsStatus(`Could not load support analytics: ${error.message}`, true);
     return;
   }
 
-  renderSupportAnalytics(data || []);
+  supportRecords = data || [];
+  renderSupportAnalytics(supportRecords.filter((record) => normalizeSupportStatus(record.status) === "success"));
+  renderSupportTable();
   setAnalyticsStatus("Support analytics loaded.");
 }
 
@@ -637,6 +766,19 @@ function handleCancelEdit() {
   resetEditState();
 }
 
+function handleAdminProjectSearch(event) {
+  adminProjectSearchTerm = event.target.value || "";
+  renderAdminProjects();
+}
+
+function handleAdminProjectSearchKeydown(event) {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  renderAdminProjects();
+  const firstEditButton = document.querySelector("#adminProjectList .edit-btn");
+  firstEditButton?.focus();
+}
+
 function handleRemoveImage() {
   if (!editingProjectId) return;
   removeImageRequested = true;
@@ -821,6 +963,28 @@ async function handleAuthSubmit(event) {
   setAuthStatus("Signed in.");
 }
 
+async function handleOtpRequest() {
+  if (!supabaseClient) {
+    setAuthStatus("Supabase is not configured. Fill supabase-config.js first.", true);
+    return;
+  }
+
+  const email = document.getElementById("authEmail")?.value.trim() || "";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    setAuthStatus("Enter a valid email first to receive an OTP link.", true);
+    return;
+  }
+
+  const emailRedirectTo = `${window.location.origin}/admin.html`;
+  const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo } });
+  if (error) {
+    setAuthStatus(`OTP request failed: ${error.message}`, true);
+    return;
+  }
+
+  setAuthStatus("OTP sign-in link sent. Check your email.");
+}
+
 async function handleLogout() {
   if (!supabaseClient) return;
   await supabaseClient.auth.signOut();
@@ -860,7 +1024,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("contactForm")?.addEventListener("submit", handleContactSubmit);
   document.getElementById("heroContentForm")?.addEventListener("submit", handleHeroSubmit);
   document.getElementById("authForm")?.addEventListener("submit", handleAuthSubmit);
+  document.getElementById("otpBtn")?.addEventListener("click", handleOtpRequest);
   document.getElementById("adminProjectList")?.addEventListener("click", handleAdminListClick);
+  document.getElementById("adminProjectSearch")?.addEventListener("input", handleAdminProjectSearch);
+  document.getElementById("adminProjectSearch")?.addEventListener("keydown", handleAdminProjectSearchKeydown);
+  document.getElementById("supportStatusFilter")?.addEventListener("change", handleSupportFilterChange);
+  document.getElementById("exportSupportsCsvBtn")?.addEventListener("click", exportSupportCsv);
   document.getElementById("cancelEdit")?.addEventListener("click", handleCancelEdit);
   document.getElementById("removeImage")?.addEventListener("click", handleRemoveImage);
   document.getElementById("clearAll")?.addEventListener("click", handleClearAll);

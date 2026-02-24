@@ -38,6 +38,7 @@
         </label>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Sign In</button>
+          <button id="otpBtn" type="button" class="btn btn-ghost">Send OTP Link</button>
           <p id="authStatus" class="edit-status" hidden></p>
         </div>
       </form>
@@ -117,6 +118,10 @@
       <div class="dashboard-tools">
         <h2>Project Library</h2>
         <div class="tool-actions">
+          <label class="project-search-wrap">
+            <span class="sr-only">Search admin projects</span>
+            <input id="adminProjectSearch" type="search" placeholder="Search projects..." />
+          </label>
           <button id="exportBtn" class="btn btn-ghost" type="button">Export JSON</button>
           <label class="btn btn-ghost upload-btn">
             Import JSON
@@ -189,6 +194,41 @@
           <p id="heroSaved" class="edit-status" hidden></p>
         </div>
       </form>
+    </section>
+
+    <section class="dashboard-card reveal delay-1">
+      <div class="dashboard-tools">
+        <h2>Support Transactions</h2>
+        <div class="tool-actions">
+          <label>
+            Status
+            <select id="supportStatusFilter">
+              <option value="all">All</option>
+              <option value="success">Success</option>
+              <option value="abandoned">Abandoned</option>
+              <option value="failed">Failed</option>
+              <option value="refunded">Refunded</option>
+            </select>
+          </label>
+          <button id="exportSupportsCsvBtn" class="btn btn-ghost" type="button">Export CSV</button>
+          <p id="supportRecordsCount" class="records-count">0 records</p>
+        </div>
+      </div>
+      <div class="support-table-wrap">
+        <table class="support-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Email</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Reference</th>
+            </tr>
+          </thead>
+          <tbody id="supportTableBody"></tbody>
+        </table>
+      </div>
+      <p id="supportTableEmpty" class="empty-state">No support records yet.</p>
     </section>
     </div>
   </main>

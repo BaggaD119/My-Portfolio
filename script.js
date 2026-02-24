@@ -51,6 +51,7 @@ const supabaseClient = supabaseReady ? window.supabase.createClient(supabaseUrl,
 
 let activeProjectTag = "all";
 let cachedProjects = [];
+let projectSearchTerm = "";
 
 function getLocalProjects() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -261,16 +262,30 @@ function renderProjects(projects) {
 
   grid.innerHTML = "";
 
-  const visibleProjects =
-    activeProjectTag === "all"
-      ? projects
-      : projects.filter((project) => (project.tags || []).includes(activeProjectTag));
+  const normalizedSearchTerm = projectSearchTerm.trim().toLowerCase();
+  const visibleProjects = projects
+    .filter((project) => (activeProjectTag === "all" ? true : (project.tags || []).includes(activeProjectTag)))
+    .filter((project) => {
+      if (!normalizedSearchTerm) return true;
+      const searchableText = [
+        project.name || "",
+        project.category || "",
+        project.description || "",
+        (project.tags || []).join(" "),
+        project.url || ""
+      ]
+        .join(" ")
+        .toLowerCase();
+      return searchableText.includes(normalizedSearchTerm);
+    });
 
   if (!visibleProjects.length) {
+    emptyState.textContent = "No projects match your current filter.";
     emptyState.style.display = "block";
     return;
   }
 
+  emptyState.textContent = "No projects yet. Add your first one from the Admin Dashboard.";
   emptyState.style.display = "none";
 
   visibleProjects.forEach((project) => {
@@ -366,6 +381,19 @@ function handleFilterClick(event) {
   renderProjects(cachedProjects);
 }
 
+function handleProjectSearch(event) {
+  projectSearchTerm = event.target.value || "";
+  renderProjects(cachedProjects);
+}
+
+function handleProjectSearchKeydown(event) {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  renderProjects(cachedProjects);
+  const firstLink = document.querySelector("#projectGrid .project-link");
+  firstLink?.focus();
+}
+
 function escapeHTML(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -428,8 +456,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const year = document.getElementById("year");
   const grid = document.getElementById("projectGrid");
   const filters = document.getElementById("projectFilters");
+  const projectSearch = document.getElementById("projectSearch");
   if (year) year.textContent = new Date().getFullYear();
   grid?.addEventListener("click", toggleDescription);
   filters?.addEventListener("click", handleFilterClick);
+  projectSearch?.addEventListener("input", handleProjectSearch);
+  projectSearch?.addEventListener("keydown", handleProjectSearchKeydown);
   initPortfolio();
 });
