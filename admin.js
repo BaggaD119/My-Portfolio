@@ -87,6 +87,14 @@ function setEditUI(isEditing, projectName = "") {
   editStatus.textContent = `Editing: ${projectName}`;
 }
 
+function setProjectSaveStatus(message, isError = false) {
+  const editStatus = document.getElementById("editStatus");
+  if (!editStatus) return;
+  editStatus.hidden = false;
+  editStatus.textContent = message;
+  editStatus.style.color = isError ? "#ff9e9e" : "var(--accent-2)";
+}
+
 function resetEditState() {
   editingProjectId = null;
   editingProjectImageUrl = "";
@@ -275,6 +283,7 @@ async function handleDelete(projectId) {
 
 async function handleProjectSubmit(event) {
   event.preventDefault();
+  const saveBtn = document.getElementById("saveBtn");
 
   const name = document.getElementById("name").value.trim();
   const category = document.getElementById("category").value.trim();
@@ -296,8 +305,17 @@ async function handleProjectSubmit(event) {
     resetEditState();
     currentProjects = fallbackProjects;
     renderAdminProjects();
+    setProjectSaveStatus("Project saved (local mode).");
     return;
   }
+
+  if (!currentUser?.id) {
+    setProjectSaveStatus("You are not signed in. Please log in again.", true);
+    return;
+  }
+
+  if (saveBtn) saveBtn.disabled = true;
+  setProjectSaveStatus(editingProjectId ? "Updating project..." : "Saving project...");
 
   try {
     let imageUrl = editingProjectImageUrl;
@@ -324,15 +342,18 @@ async function handleProjectSubmit(event) {
     } else {
       const { error } = await supabaseClient
         .from(projectsTable)
-        .insert([{ name, category, url, description, image_url: imageUrl }]);
+        .insert([{ user_id: currentUser.id, name, category, url, description, image_url: imageUrl }]);
 
       if (error) throw new Error(error.message);
     }
 
     resetEditState();
     await loadProjects();
+    setProjectSaveStatus("Project saved.");
   } catch (error) {
-    alert(`Failed to save project: ${error.message}`);
+    setProjectSaveStatus(`Failed to save project: ${error.message}`, true);
+  } finally {
+    if (saveBtn) saveBtn.disabled = false;
   }
 }
 
