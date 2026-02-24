@@ -3,3 +3,5 @@ window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 window.SUPABASE_PROJECTS_TABLE = "projects";
 window.SUPABASE_CONTACT_TABLE = "contact_settings";
 window.SUPABASE_STORAGE_BUCKET = "project-images";
+window.SUPABASE_SUPPORT_TABLE = "support_records";
+window.SUPABASE_HERO_TABLE = "hero_content";

@@ -68,6 +68,10 @@
           <textarea id="description" rows="4" required placeholder="What the project does and why it matters."></textarea>
         </label>
         <label>
+          Tags (comma separated)
+          <input id="tags" type="text" placeholder="React, Supabase, UI" />
+        </label>
+        <label>
           Thumbnail Image
           <input id="image" type="file" accept="image/*" />
         </label>
@@ -81,6 +85,32 @@
           <button type="button" id="clearAll" class="btn btn-ghost">Clear All</button>
         </div>
       </form>
+    </section>
+
+    <section class="dashboard-card reveal delay-1">
+      <div class="section-head">
+        <p class="eyebrow">Support Analytics</p>
+        <h2>Donation Summary</h2>
+      </div>
+      <div class="analytics-grid">
+        <article class="stat-card">
+          <p>Total Supports</p>
+          <h3 id="supportCount">0</h3>
+        </article>
+        <article class="stat-card">
+          <p>Total Amount (GHS)</p>
+          <h3 id="supportTotal">0</h3>
+        </article>
+        <article class="stat-card">
+          <p>Average Support (GHS)</p>
+          <h3 id="supportAverage">0</h3>
+        </article>
+        <article class="stat-card">
+          <p>Top Month</p>
+          <h3 id="supportTopMonth">-</h3>
+        </article>
+      </div>
+      <p id="supportAnalyticsStatus" class="edit-status" hidden></p>
     </section>
 
     <section class="dashboard-card reveal delay-1">
@@ -128,6 +158,35 @@
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Save Contact Details</button>
           <p id="contactSaved" class="edit-status" hidden>Saved.</p>
+        </div>
+      </form>
+    </section>
+
+    <section class="dashboard-card reveal delay-1">
+      <div class="section-head">
+        <p class="eyebrow">Hero Content</p>
+        <h2>Homepage Messaging</h2>
+      </div>
+      <form id="heroContentForm" class="project-form">
+        <label>
+          Headline
+          <input id="heroHeadlineInput" type="text" required placeholder="I design and ship digital products..." />
+        </label>
+        <label>
+          Lead Text
+          <textarea id="heroLeadInput" rows="3" required placeholder="A modern portfolio..." ></textarea>
+        </label>
+        <label>
+          Focus Title
+          <input id="heroFocusTitleInput" type="text" required placeholder="Current Focus" />
+        </label>
+        <label>
+          Focus Items (one per line)
+          <textarea id="heroFocusItemsInput" rows="5" required placeholder="Frontend architecture&#10;UI performance optimization&#10;Fullstack product launches"></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Hero Content</button>
+          <p id="heroSaved" class="edit-status" hidden></p>
         </div>
       </form>
     </section>

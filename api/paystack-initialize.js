@@ -1,7 +1,38 @@
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX = 8;
+const rateLimitStore = new Map();
+
+function getClientIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded.length) {
+    return forwarded.split(",")[0].trim();
+  }
+  return req.socket?.remoteAddress || "unknown";
+}
+
+function isRateLimited(req) {
+  const ip = getClientIp(req);
+  const now = Date.now();
+  const entry = rateLimitStore.get(ip) || { count: 0, startedAt: now };
+
+  if (now - entry.startedAt > RATE_LIMIT_WINDOW_MS) {
+    rateLimitStore.set(ip, { count: 1, startedAt: now });
+    return false;
+  }
+
+  entry.count += 1;
+  rateLimitStore.set(ip, entry);
+  return entry.count > RATE_LIMIT_MAX;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed." });
+  }
+
+  if (isRateLimited(req)) {
+    return res.status(429).json({ error: "Too many requests. Please wait and try again." });
   }
 
   const secretKey = String(process.env.PAYSTACK_SECRET_KEY || "").trim();
@@ -36,6 +67,7 @@ module.exports = async (req, res) => {
         amount: amountInKobo,
         callback_url: callbackUrl,
         metadata: {
+          source: "baggad119-portfolio-support",
           custom_fields: [
             { display_name: "Supporter Name", variable_name: "supporter_name", value: String(name || "") },
             { display_name: "Support Message", variable_name: "support_message", value: String(message || "") }

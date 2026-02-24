@@ -25,8 +25,36 @@ create table if not exists public.contact_settings (
   constraint contact_singleton check (id = 1)
 );
 
+create table if not exists public.support_records (
+  id bigint generated always as identity primary key,
+  reference text not null unique,
+  email text not null,
+  amount numeric(12,2) not null default 0,
+  currency text not null default 'GHS',
+  status text not null,
+  paid_at timestamptz,
+  metadata jsonb,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.hero_content (
+  id int primary key,
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  headline text not null,
+  lead text not null,
+  focus_title text not null,
+  focus_items text[] not null default '{}',
+  updated_at timestamptz not null default now(),
+  constraint hero_singleton check (id = 1)
+);
+
+alter table public.projects add column if not exists tags text[] not null default '{}';
+alter table public.projects add column if not exists display_order int not null default 0;
+
 alter table public.projects enable row level security;
 alter table public.contact_settings enable row level security;
+alter table public.support_records enable row level security;
+alter table public.hero_content enable row level security;
 
 -- Public read for portfolio page
 drop policy if exists "Public can read projects" on public.projects;
@@ -37,6 +65,16 @@ using (true);
 drop policy if exists "Public can read contact settings" on public.contact_settings;
 create policy "Public can read contact settings"
 on public.contact_settings for select
+using (true);
+
+drop policy if exists "Public can read support records" on public.support_records;
+create policy "Public can read support records"
+on public.support_records for select
+using (true);
+
+drop policy if exists "Public can read hero content" on public.hero_content;
+create policy "Public can read hero content"
+on public.hero_content for select
 using (true);
 
 -- Admin write permissions (must be authenticated)
@@ -71,6 +109,25 @@ on public.contact_settings for update
 to authenticated
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
+
+drop policy if exists "Owner can insert hero content" on public.hero_content;
+create policy "Owner can insert hero content"
+on public.hero_content for insert
+to authenticated
+with check (auth.uid() = user_id);
+
+drop policy if exists "Owner can update hero content" on public.hero_content;
+create policy "Owner can update hero content"
+on public.hero_content for update
+to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+drop policy if exists "Authenticated can insert support records" on public.support_records;
+create policy "Authenticated can insert support records"
+on public.support_records for insert
+to authenticated
+with check (true);
 
 -- Storage bucket for project images
 insert into storage.buckets (id, name, public)

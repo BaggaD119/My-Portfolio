@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BaggaD119 | Portfolio</title>
+  <meta name="description" content="BaggaD119 portfolio: digital products, shipped projects, and fullstack execution." />
+  <meta property="og:title" content="BaggaD119 | Portfolio" />
+  <meta property="og:description" content="Digital products that feel premium and perform at scale." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://baggad119-portfolio.vercel.app/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BaggaD119 | Portfolio" />
+  <meta name="twitter:description" content="Digital products that feel premium and perform at scale." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
@@ -29,15 +37,15 @@
         <div class="hero-copy reveal">
           <p class="eyebrow hero-eyebrow-zoom">Creative Developer & Builder</p>
           <h1 id="heroHeadline" data-text="I design and ship digital products that feel premium and perform at scale.">I design and ship digital products that feel premium and perform at scale.</h1>
-          <p class="lead">A modern portfolio with a built-in admin dashboard to publish your deployed projects in seconds.</p>
+          <p id="heroLead" class="lead">A modern portfolio with a built-in admin dashboard to publish your deployed projects in seconds.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#projects">View Projects</a>
             <a class="btn btn-ghost" href="#contact">Get In Touch</a>
           </div>
         </div>
         <div class="hero-panel reveal delay-1">
-          <p class="panel-title">Current Focus</p>
-          <ul>
+          <p id="heroPanelTitle" class="panel-title">Current Focus</p>
+          <ul id="heroFocusList">
             <li>Frontend architecture</li>
             <li>UI performance optimization</li>
             <li>Fullstack product launches</li>
@@ -52,6 +60,7 @@
           <p class="eyebrow">Selected Work</p>
           <h2>Deployed Projects</h2>
         </div>
+        <div id="projectFilters" class="project-filters"></div>
         <div id="projectGrid" class="project-grid"></div>
         <p id="emptyState" class="empty-state">No projects yet. Add your first one from the Admin Dashboard.</p>
       </div>
