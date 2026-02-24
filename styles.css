@@ -405,7 +405,7 @@ main section {
 
 .footer-wrap {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
   color: var(--muted);
