@@ -219,6 +219,26 @@ function escapeHTML(value) {
     .replaceAll("'", "&#39;");
 }
 
+function typeHeroHeadline() {
+  const headline = document.getElementById("heroHeadline");
+  if (!headline) return;
+
+  const fullText = (headline.dataset.text || headline.textContent || "").trim();
+  if (!fullText) return;
+
+  headline.textContent = "";
+  let index = 0;
+
+  const typeNext = () => {
+    if (index > fullText.length) return;
+    headline.textContent = fullText.slice(0, index);
+    index += 1;
+    setTimeout(typeNext, 40);
+  };
+
+  typeNext();
+}
+
 async function initPortfolio() {
   const [projects, contact] = await Promise.all([fetchProjects(), fetchContactDetails()]);
   renderProjects(projects);
@@ -229,6 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const year = document.getElementById("year");
   const grid = document.getElementById("projectGrid");
   if (year) year.textContent = new Date().getFullYear();
+  typeHeroHeadline();
   grid?.addEventListener("click", toggleDescription);
   initPortfolio();
 });
