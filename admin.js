@@ -23,6 +23,23 @@ let removeImageRequested = false;
 let currentProjects = [];
 let currentUser = null;
 
+function getLocalContactDetails() {
+  const raw = localStorage.getItem(CONTACT_STORAGE_KEY);
+  if (!raw) return { ...defaultContact };
+
+  try {
+    const parsed = JSON.parse(raw);
+    return { ...defaultContact, ...parsed };
+  } catch {
+    return { ...defaultContact };
+  }
+}
+
+function saveLocalContactDetails(contact) {
+  const safeContact = { ...defaultContact, ...contact };
+  localStorage.setItem(CONTACT_STORAGE_KEY, JSON.stringify(safeContact));
+}
+
 function escapeHTML(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -177,9 +194,7 @@ async function loadProjects() {
 
 async function loadContactDetails() {
   if (!supabaseClient) {
-    const raw = localStorage.getItem(CONTACT_STORAGE_KEY);
-    const contact = raw ? { ...defaultContact, ...JSON.parse(raw) } : defaultContact;
-    fillContactForm(contact);
+    fillContactForm(getLocalContactDetails());
     return;
   }
 
@@ -192,11 +207,13 @@ async function loadContactDetails() {
 
   if (error) {
     setContactSaved(`Could not load contact settings: ${error.message}`, true);
-    fillContactForm(defaultContact);
+    fillContactForm(getLocalContactDetails());
     return;
   }
 
-  fillContactForm({ ...defaultContact, ...(data || {}) });
+  const contact = { ...defaultContact, ...(data || {}) };
+  saveLocalContactDetails(contact);
+  fillContactForm(contact);
 }
 
 function fillContactForm(contact) {
@@ -427,7 +444,6 @@ async function handleContactSubmit(event) {
   event.preventDefault();
 
   const contact = {
-    id: 1,
     email: document.getElementById("contactEmail").value.trim(),
     whatsapp: document.getElementById("contactWhatsapp").value.trim(),
     linkedin: document.getElementById("contactLinkedin").value.trim(),
@@ -437,18 +453,21 @@ async function handleContactSubmit(event) {
   };
 
   if (!supabaseClient) {
-    localStorage.setItem(CONTACT_STORAGE_KEY, JSON.stringify(contact));
+    saveLocalContactDetails(contact);
     setContactSaved("Contact details saved (local mode).");
     return;
   }
 
-  const { error } = await supabaseClient.from(contactTable).upsert(contact, { onConflict: "id" });
+  const singletonContact = { id: 1, ...contact };
+  const { error } = await supabaseClient.from(contactTable).upsert(singletonContact, { onConflict: "id" });
 
   if (error) {
-    setContactSaved(`Could not save contact settings: ${error.message}`, true);
+    saveLocalContactDetails(contact);
+    setContactSaved(`Saved locally only. Supabase error: ${error.message}`, true);
     return;
   }
 
+  saveLocalContactDetails(contact);
   setContactSaved("Contact details saved.");
 }
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support | BaggaD119</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="site-header">
+    <div class="container header-wrap">
+      <a class="brand" href="index.html#hero">BaggaD119.</a>
+      <nav>
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="done.html">Give</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="support-main">
+    <section class="support-section">
+      <div class="container support-wrap reveal">
+        <p class="eyebrow">Support</p>
+        <h1>Support My Work</h1>
+        <p class="lead">
+          If you like what I am building, you can support me directly with Paystack.
+        </p>
+        <div class="support-actions">
+          <a class="btn btn-primary" href="https://paystack.com/pay/your-link" target="_blank" rel="noopener noreferrer">Support via Paystack</a>
+          <a class="btn btn-ghost" href="mailto:opokuamanorsolomon@gmail.com">Contact Me</a>
+        </div>
+        <p class="support-note">Replace the Paystack URL in this button with your real payment link.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <p>&copy; <span id="year"></span> BaggaD119. Crafted with precision.</p>
+      <a class="btn btn-ghost" href="index.html">Back to Portfolio</a>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

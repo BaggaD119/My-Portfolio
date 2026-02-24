@@ -324,6 +324,40 @@ main section {
   padding: 1.5rem 0;
 }
 
+.support-main {
+  min-height: calc(100vh - 160px);
+}
+
+.support-section {
+  padding: 6rem 0 5rem;
+}
+
+.support-wrap {
+  max-width: 760px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+}
+
+.support-wrap h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.support-actions {
+  margin-top: 1.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.support-note {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .footer-wrap {
   display: flex;
   justify-content: space-between;
@@ -522,5 +556,9 @@ textarea:focus {
   .footer-wrap {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .support-wrap {
+    padding: 1.3rem;
   }
 }

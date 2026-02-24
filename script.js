@@ -66,6 +66,11 @@ function getLocalContactDetails() {
   }
 }
 
+function saveLocalContactDetails(contact) {
+  const safeContact = { ...defaultContact, ...contact };
+  localStorage.setItem(CONTACT_STORAGE_KEY, JSON.stringify(safeContact));
+}
+
 async function fetchProjects() {
   if (!supabaseClient) {
     return getLocalProjects();
@@ -104,7 +109,9 @@ async function fetchContactDetails() {
     return getLocalContactDetails();
   }
 
-  return { ...defaultContact, ...(data || {}) };
+  const contact = { ...defaultContact, ...(data || {}) };
+  saveLocalContactDetails(contact);
+  return contact;
 }
 
 function normalizeWhatsAppLink(value) {
